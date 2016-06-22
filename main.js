@@ -2,7 +2,7 @@ $(function() {
     var values = {
         x: 200,
         y: 200,
-        rotation: 0,
+        rotation: 0, // store as degrees
         acceleration: 1,
         maxSpeed: 5,
         canvasWidth: 400,
@@ -52,15 +52,19 @@ function updateValues(values, input) {
 
     // update rotation
     if(input.rotate != 0) {
-        values.rotation += input.rotate * 0.03;
+        values.rotation += input.rotate;
 
         // rotation constraints
-        if(values.rotation > Math.PI * 2) { values.rotation = 0; }
-        if(values.rotation < 0) { values.rotation = Math.PI * 2; }
+        if(values.rotation > 360) { values.rotation = 0; }
+        if(values.rotation < 0) { values.rotation = 360; }
     }
 
     // update ship x/y position
-    values.y -= values.acceleration * values.maxSpeed;
+    var maxX = 0;
+    var maxY = values.maxSpeed;
+
+    values.x -= values.acceleration * maxX;
+    values.y -= values.acceleration * maxY;
 
     // set constraints
     if (values.x > values.canvasWidth) { values.x = 0; }
@@ -82,7 +86,9 @@ function drawSpaceship(values, sprites) {
         // transform coordinates
         ctx.translate(values.x, values.y);
         ctx.translate(32, 32);
-        ctx.rotate(values.rotation);
+
+        var rotationRadians = values.rotation * Math.PI / 180;
+        ctx.rotate(rotationRadians);
 
         // draw image
         ctx.drawImage(sprites.ship, -32, -32);
