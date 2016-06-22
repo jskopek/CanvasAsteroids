@@ -1,22 +1,34 @@
 $(function() {
-    var x = 200, y = 200, rotation = 0;
+    var values = {
+        x: 200,
+        y: 200,
+        rotation: 0,
+        canvasWidth: 400,
+        canvasHeight: 400
+    };
+
+    var sprites = {
+        ship: new Image()
+    }
+    sprites.ship.src = 'spaceship.png';
+
+
     setInterval(function() {
-        rotation += 10;
-        drawTriangle(x, y, rotation);
-    }, 100);
+        updateValues(values);
+        drawSpaceship(values, sprites);
+    }, 1000 / 60);
 });
 
-function drawTriangle(x, y, rotation) {
+function updateValues(values) {
+    values.x += 0.5;
+}
+
+function drawSpaceship(values, sprites) {
     var canvas = document.getElementById('canvas');
+
     if(canvas.getContext) {
         var ctx = canvas.getContext('2d');
-        ctx.clearRect(0,0,400,400);
-
-        x = 100; y = 100;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + 10, y + 10);
-        ctx.lineTo(x, y + 20);
-        ctx.fill();
+        ctx.clearRect(0,0,values.canvasWidth,values.canvasWidth);
+        ctx.drawImage(sprites.ship, values.x, values.y);
     }
 }
