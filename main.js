@@ -20,7 +20,13 @@ $(function() {
 });
 
 function updateValues(values) {
-    values.x += 0.5;
+    values.x += 5;
+
+    // set constraints
+    if (values.x > values.canvasWidth) { values.x = 0; }
+    if (values.x < 0) { values.x = values.canvasHeight; }
+    if (values.y > values.canvasWidth) { values.y = 0; }
+    if (values.y < 0) { values.y = values.canvasHeight; }
 }
 
 function drawSpaceship(values, sprites) {
