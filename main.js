@@ -40,20 +40,27 @@ $(function() {
 });
 
 function updateValues(values, input) {
-    values.y -= values.acceleration * values.maxSpeed;
+    // update acceleartion
     if(input.forward) {
-        if(values.acceleration >= 0.2 && values.acceleration < 1) {
-            values.acceleration *= 1.4;
-        } else if(values.acceleration < 0.2) {
-            values.acceleration = 0.2;
-        }
-    } else {
-        values.acceleration *= 0.95;
+        if(values.acceleration < 0.2) { values.acceleration = 0.2; } // min value
+        values.acceleration *= 1.4; // increase acceleartion on boost
+        if(values.acceleration > 1) { values.acceleration = 1; } // set upper limit of acceleartion
     }
 
+    // acceleartion decays
+    values.acceleration *= 0.95;
+
+    // update rotation
     if(input.rotate != 0) {
         values.rotation += input.rotate * 0.03;
+
+        // rotation constraints
+        if(values.rotation > Math.PI * 2) { values.rotation = 0; }
+        if(values.rotation < 0) { values.rotation = Math.PI * 2; }
     }
+
+    // update ship x/y position
+    values.y -= values.acceleration * values.maxSpeed;
 
     // set constraints
     if (values.x > values.canvasWidth) { values.x = 0; }
@@ -70,17 +77,17 @@ function drawSpaceship(values, sprites) {
         var ctx = canvas.getContext('2d');
 
         ctx.clearRect(0,0,values.canvasWidth,values.canvasWidth);
+        ctx.save();
         
-        // reverse
+        // transform coordinates
         ctx.translate(values.x, values.y);
         ctx.translate(32, 32);
         ctx.rotate(values.rotation);
 
+        // draw image
         ctx.drawImage(sprites.ship, -32, -32);
 
-        // reverse
-        ctx.rotate(-values.rotation);
-        ctx.translate(-32, -32);
-        ctx.translate(-values.x, -values.y);
+        // retore coordinate system
+        ctx.restore();
     }
 }
