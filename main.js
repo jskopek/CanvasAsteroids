@@ -60,11 +60,18 @@ function updateValues(values, input) {
     }
 
     // update ship x/y position
-    var maxX = 0;
-    var maxY = values.maxSpeed;
+    var hypotenuse = values.maxSpeed;
 
-    values.x -= values.acceleration * maxX;
-    values.y -= values.acceleration * maxY;
+
+    var rotationRadians = (values.rotation + 270) * Math.PI / 180;
+
+    var adjacent = Math.cos(rotationRadians) * hypotenuse;
+    var opposite = Math.sin(rotationRadians) * hypotenuse;
+    var maxX = adjacent;
+    var maxY = opposite;
+
+    values.x += values.acceleration * maxX;
+    values.y += values.acceleration * maxY;
 
     // set constraints
     if (values.x > values.canvasWidth) { values.x = 0; }
